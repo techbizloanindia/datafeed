@@ -44,7 +44,7 @@ export default function CreateUser() {
   const router = useRouter();
 
   // Available roles
-  const availableRoles = ["Branch Level", "Cluster Level", "Chief Executive Officer", "Admin", "Manager"];
+  const availableRoles = ["Branch Level", "Cluster Level", "Chief Executive Officer"];
 
   // Fetch clusters and branches on component mount
   useEffect(() => {
