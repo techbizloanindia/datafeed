@@ -144,11 +144,20 @@ export default function RoleBasedDataTable({
         }
       }
       
+      // Add cache-busting parameters for real-time data
+      url.searchParams.append('_t', new Date().getTime().toString());
+      url.searchParams.append('_r', Math.random().toString().substring(2));
+      
+      console.log(`Fetching real-time data from ${endpoint} at ${new Date().toISOString()}`);
+      
       const response = await fetch(url.toString(), {
         cache: 'no-store',
         headers: {
-          'Cache-Control': 'no-cache'
-        }
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        next: { revalidate: 0 }
       });
       
       if (!response.ok) {
@@ -166,7 +175,10 @@ export default function RoleBasedDataTable({
       
       // If no data is available after filtering, use sample data
       if (filteredData.length === 0) {
+        console.log(`No data returned from ${endpoint}, using sample data`);
         filteredData = generateSampleData();
+      } else {
+        console.log(`Received ${filteredData.length} records from ${endpoint}`);
       }
       
       setData(filteredData);
@@ -188,6 +200,7 @@ export default function RoleBasedDataTable({
       setError(error.message || 'Failed to load data');
       
       // Use sample data on error
+      console.log(`Error fetching data from ${endpoint}, using sample data`);
       const sampleData = generateSampleData();
       setData(sampleData);
     } finally {
@@ -279,6 +292,8 @@ export default function RoleBasedDataTable({
               onRefresh={fetchData} 
               isLoading={loading}
               lastRefreshed={lastRefreshed}
+              isRealTimeData={true}
+              buttonText="Refresh Data"
             />
           )}
           {reportLink && (
