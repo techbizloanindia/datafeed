@@ -4,7 +4,14 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
 
 ![DataFeed Logo](/public/datafeed-logo.svg)
 
-## Features
+## 🚀 Quick Links
+
+- **Live Demo**: [Coming Soon](#)
+- **GitHub Repository**: [github.com/techbizloanindia/datafeed](https://github.com/techbizloanindia/datafeed)
+- **Documentation**: [See below](#features)
+- **Issues**: [Report a bug](https://github.com/techbizloanindia/datafeed/issues)
+
+## ✨ Features
 
 - **User Authentication**: Secure login system with session management
 - **Interactive Dashboard**: Centralized view of all key metrics
@@ -15,7 +22,7 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
 - **Advanced Data Visualization**: Interactive charts and graphs for data analysis
 - **Modern UI**: Clean, card-based design with consistent styling
 
-## Modules
+## 📊 Modules
 
 ### User Interface
 - **Main Dashboard**: Overview of all key business metrics
@@ -58,7 +65,7 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
 - **MIS Reports**: Management Information System reporting
 - **Google Sheets**: Data import and synchronization
 
-## Technology Stack
+## 💻 Technology Stack
 
 - **Frontend**: Next.js 15.x, React, TypeScript, Tailwind CSS
 - **Data Visualization**: Chart.js with React-chartjs-2
@@ -68,7 +75,7 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
 - **Styling**: Custom CSS variables with Tailwind utility classes
 - **Deployment**: Vercel-ready configuration
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -117,22 +124,15 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
    yarn build
    ```
 
-## Deployment
+## 🚀 Deployment
 
 The application can be deployed to Vercel or any other hosting platform that supports Next.js.
 
-## GitHub Repository Setup
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in the Vercel dashboard
+3. Deploy with a single click
 
-To push this project to GitHub, follow these steps:
-
-1. Create a new repository on GitHub
-2. Initialize Git in your project folder (if not already done)
-3. Add the remote repository
-4. Push your code
-
-Note: GitHub no longer supports password authentication for Git operations. Use a personal access token instead.
-
-## Configuration
+## 🔧 Configuration
 
 ### Google Sheets Integration
 
@@ -148,7 +148,7 @@ To use your own Google Sheets:
 2. Ensure your Google Sheets have the correct column headers
 3. Make sure the sheets are accessible with your API key
 
-## Design System
+## 🎨 Design System
 
 The application uses a consistent design system with the following key elements:
 
@@ -175,7 +175,7 @@ The application uses a consistent design system with the following key elements:
   - Consistent spacing using CSS variables
   - Mobile-first approach with breakpoints
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 datafeed/
@@ -265,7 +265,7 @@ datafeed/
 └── README.md                  # Project documentation
 ```
 
-## Application Flow
+## 🔄 Application Flow
 
 ### User Authentication Flow
 1. User navigates to the application
@@ -300,7 +300,7 @@ datafeed/
 4. User can filter and sort the data based on various parameters
 5. Charts provide visual representation of the data metrics
 
-## User Roles and Permissions
+## 👥 User Roles and Permissions
 
 1. **Branch Level User**
    - Access to Branch Level Dashboard
@@ -330,7 +330,7 @@ datafeed/
    - System configuration access
    - Full access to all reports and data
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
@@ -338,17 +338,24 @@ datafeed/
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a pull request
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - Next.js team for the amazing framework
 - Chart.js for powerful data visualization
 - Google Sheets API for data integration capabilities
 
-## Recent Updates
+## 📅 Recent Updates
+
+### June 2023
+
+1. **GitHub Repository Setup**
+   - Created and configured GitHub repository at [github.com/techbizloanindia/datafeed](https://github.com/techbizloanindia/datafeed)
+   - Set up proper project structure and documentation
+   - Configured ESLint and TypeScript for code quality
 
 ### May 2023
 
