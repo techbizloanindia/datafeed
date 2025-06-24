@@ -42,6 +42,8 @@ export default function CEODashboardChartView() {
   const [selectedCluster, setSelectedCluster] = useState<string>("");
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [filteredBranches, setFilteredBranches] = useState<string[]>([]);
+  const [lastRefreshed, setLastRefreshed] = useState<string | null>(null);
+  const [isRealTimeData, setIsRealTimeData] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -128,7 +130,21 @@ export default function CEODashboardChartView() {
         url.searchParams.append('branch', selectedBranch);
       }
       
-      const response = await fetch(url);
+      // Add cache-busting parameters for real-time data
+      url.searchParams.append('_t', new Date().getTime().toString());
+      url.searchParams.append('_r', Math.random().toString().substring(2));
+      
+      console.log(`Fetching real-time CEO dashboard data at ${new Date().toISOString()}`);
+      
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        next: { revalidate: 0 }
+      });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.status}`);
@@ -151,6 +167,10 @@ export default function CEODashboardChartView() {
       }
       
       setDashboardData(result);
+      
+      // Update real-time indicators
+      setLastRefreshed(new Date().toISOString());
+      setIsRealTimeData(result.dataSource === 'real-time' || true);
       
       // Set the sheet from URL params or first available
       const sheetFromParams = searchParams.get('sheet');
@@ -189,10 +209,19 @@ export default function CEODashboardChartView() {
     }
   };
 
-  // Initial data fetch
+  // Initial data fetch and set up auto-refresh
   useEffect(() => {
     fetchData();
-  }, []);
+    
+    // Set up auto-refresh every 60 seconds
+    const intervalId = setInterval(() => {
+      console.log('Auto-refreshing CEO dashboard data');
+      fetchData();
+    }, 60000);
+    
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [selectedCluster, selectedBranch]);
 
   // Update selected metrics when sheet changes
   useEffect(() => {
@@ -457,7 +486,25 @@ export default function CEODashboardChartView() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">CEO Dashboard Chart Analysis</h1>
-            <p className="text-gray-600">Advanced visualization of real-time data</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="text-gray-600">Advanced visualization</p>
+              {isRealTimeData ? (
+                <span className="flex items-center text-green-600 text-sm">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                  Real-time data
+                </span>
+              ) : (
+                <span className="flex items-center text-yellow-600 text-sm">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                  Sample data
+                </span>
+              )}
+              {lastRefreshed && (
+                <span className="text-xs text-gray-500">
+                  Last updated: {new Date(lastRefreshed).toLocaleTimeString()}
+                </span>
+              )}
+            </div>
           </div>
           
           <div className="flex items-center space-x-2">

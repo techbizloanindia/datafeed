@@ -218,14 +218,23 @@ export async function GET(request: Request) {
         }
       }
 
+      // Add cache control headers to the response
+      const headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      };
+      
       return NextResponse.json({ 
         sheets: sheetsInfo,
         data: allSheetsData,
         filters: {
           cluster,
           branch
-        }
-      });
+        },
+        lastUpdated: new Date().toISOString(),
+        dataSource: 'real-time'
+      }, { headers });
       
     } catch (apiError: any) {
       console.error('Google Sheets API error:', apiError.message);
@@ -238,7 +247,9 @@ export async function GET(request: Request) {
         filters: {
           cluster,
           branch
-        }
+        },
+        lastUpdated: new Date().toISOString(),
+        dataSource: 'sample'
       };
       
       if (apiError.code === 403) {
@@ -250,11 +261,22 @@ export async function GET(request: Request) {
     }
   } catch (error: any) {
     console.error('Error fetching CEO dashboard data:', error);
+    const headers = {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    };
+    
     return NextResponse.json({ 
       error: `Failed to fetch CEO dashboard data: ${error.message}`,
       sheets: [],
       data: {},
-      filters: {}
-    }, { status: 500 });
+      filters: {},
+      lastUpdated: new Date().toISOString(),
+      dataSource: 'sample'
+    }, { 
+      status: 500,
+      headers
+    });
   }
 } 

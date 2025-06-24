@@ -1,13 +1,128 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
 import Navigation from '../../components/Navigation';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useUser } from '../../context/UserContext';
+import RefreshButton from '../../components/RefreshButton';
 
 const ChartView = () => {
-  // Sample data - replace with your actual data
-  const rawData = [
+  const { user } = useUser();
+  const searchParams = useSearchParams();
+  const reportType = searchParams.get('type') || 'performance';
+  
+  const [rawData, setRawData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [lastRefreshed, setLastRefreshed] = useState<string | null>(null);
+  const [isRealTimeData, setIsRealTimeData] = useState(false);
+  
+  // Fetch data from API
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Build URL with query parameters for role-based filtering
+      let url = new URL('/api/branch-target-leads', window.location.origin);
+      
+      // Add role-based filtering parameters
+      if (user) {
+        if (user.role) {
+          url.searchParams.append('role', user.role);
+        }
+        if (user.cluster) {
+          url.searchParams.append('cluster', user.cluster);
+        }
+        if (user.branch) {
+          url.searchParams.append('branch', user.branch);
+        }
+      }
+      
+      // Add cache-busting parameters for real-time data
+      url.searchParams.append('_t', new Date().getTime().toString());
+      url.searchParams.append('_r', Math.random().toString().substring(2));
+      
+      console.log(`Fetching real-time data for chart-view at ${new Date().toISOString()}`);
+      
+      const response = await fetch(url.toString(), {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        next: { revalidate: 0 }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      
+      // Get data from response
+      const fetchedData = Array.isArray(result) ? result : Array.isArray(result.data) ? result.data : [];
+      
+      // If no data is available, use sample data
+      if (fetchedData.length === 0) {
+        console.log("No data returned from API, using sample data");
+        setRawData(getSampleData());
+        setIsRealTimeData(false);
+      } else {
+        console.log(`Received ${fetchedData.length} records from API`);
+        
+        // Map the data to match our expected format
+        const mappedData = fetchedData.map(item => ({
+          branch: item.branch || item.branchName || '',
+          cluster: item.cluster || '',
+          dailyTarget: item.dailyTargetLeads || 0,
+          dailyActual: item.dailyActualLeads || 0,
+          mtdTarget: item.mtdTargetLeads || 0,
+          mtdActual: item.mtdActualLeads || 0,
+          mtdVariance: item.mtdVariancePercentage || 0
+        }));
+        
+        setRawData(mappedData);
+        setIsRealTimeData(result.dataSource === 'real-time');
+      }
+      
+      // Set last refreshed timestamp
+      if (result.lastUpdated) {
+        setLastRefreshed(result.lastUpdated);
+      } else {
+        setLastRefreshed(new Date().toISOString());
+      }
+    } catch (error: any) {
+      console.error('Error fetching data:', error);
+      setError(error.message || 'Failed to load data');
+      setRawData(getSampleData());
+      setIsRealTimeData(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Fetch data on initial load
+  useEffect(() => {
+    fetchData();
+    
+    // Set up auto-refresh every 60 seconds
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 60000);
+    
+    return () => clearInterval(intervalId);
+  }, [user]);
+  
+  // Sample data as fallback
+  const getSampleData = () => [
     { branch: "Gurugram", cluster: "Gurugram", dailyTarget: 12, dailyActual: 12, mtdTarget: 50, mtdActual: 12, mtdVariance: -76.00 },
     { branch: "Yelahanka", cluster: "Karnataka", dailyTarget: 12, dailyActual: 10, mtdTarget: 50, mtdActual: 12, mtdVariance: -76.00 },
     { branch: "Davanagere", cluster: "Karnataka", dailyTarget: 12, dailyActual: 9, mtdTarget: 50, mtdActual: 25, mtdVariance: -50.00 },
@@ -123,7 +238,26 @@ const ChartView = () => {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold text-white mb-2">Branch Performance Dashboard</h1>
-              <p className="text-gray-400">Real-time insights and analytics</p>
+              <div className="flex items-center">
+                <p className="text-gray-400 mr-2">
+                  {isRealTimeData ? (
+                    <span className="flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                      Real-time insights
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                      Sample data
+                    </span>
+                  )}
+                </p>
+                {lastRefreshed && (
+                  <p className="text-xs text-gray-500">
+                    Last updated: {new Date(lastRefreshed).toLocaleTimeString()}
+                  </p>
+                )}
+              </div>
               <div className="h-1 w-24 bg-purple-600 rounded-full mt-2"></div>
             </div>
             <div className="flex space-x-3">
@@ -131,11 +265,13 @@ const ChartView = () => {
                 value={selectedCluster} 
                 onChange={(e) => setSelectedCluster(e.target.value)}
                 className="bg-slate-700 text-white rounded-lg border border-slate-600 px-4 py-2"
+                disabled={loading}
               >
                 {clusters.map(cluster => (
                   <option key={cluster} value={cluster}>{cluster}</option>
                 ))}
               </select>
+              <RefreshButton onClick={fetchData} isLoading={loading} />
               <button className="flex items-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -144,6 +280,27 @@ const ChartView = () => {
               </button>
             </div>
           </div>
+          
+          {/* Loading State */}
+          {loading && (
+            <div className="bg-slate-700 p-4 rounded-lg mb-6 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500 mr-3"></div>
+              <p className="text-white">Loading real-time data...</p>
+            </div>
+          )}
+          
+          {/* Error State */}
+          {error && (
+            <div className="bg-red-900 bg-opacity-30 border border-red-700 p-4 rounded-lg mb-6">
+              <p className="text-red-400 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {error}
+              </p>
+              <p className="text-red-400 text-sm mt-1">Showing sample data instead.</p>
+            </div>
+          )}
           
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
