@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<string | null>(null);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
-  const [autoRefreshInterval, setAutoRefreshInterval] = useState(60); // seconds
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState(30); // seconds - set to 30 seconds for more frequent updates
   const { user } = useUser();
   const router = useRouter();
 
@@ -95,8 +95,12 @@ const Dashboard = () => {
         url.searchParams.append('region', selectedRegion);
       }
       
-      // Add cache-busting parameter for real-time data
+      // Add cache-busting parameter for real-time data - using both timestamp and random value
+      // to ensure we always get fresh data
       url.searchParams.append('_t', new Date().getTime().toString());
+      url.searchParams.append('_r', Math.random().toString().substring(2));
+      
+      console.log('Fetching real-time dashboard data...');
       
       const response = await fetch(url.toString(), {
         cache: 'no-store',
@@ -104,7 +108,9 @@ const Dashboard = () => {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
           'Expires': '0'
-        }
+        },
+        // Adding next.js specific revalidate: 0 to ensure no caching
+        next: { revalidate: 0 }
       });
       
       if (!response.ok) {
@@ -112,6 +118,9 @@ const Dashboard = () => {
       }
       
       const result = await response.json();
+      console.log('Real-time data received:', result.dataSource === 'real-time' ? 'LIVE DATA' : 'MOCK DATA');
+      
+      // Update the data and last refreshed timestamp
       setDashboardData(result);
       setLastRefreshed(new Date().toISOString());
     } catch (error) {
@@ -174,11 +183,11 @@ const Dashboard = () => {
     };
   };
 
-  // Fallback metrics in case API fails
+  // Fallback metrics in case API fails - updated to match exact values from screenshot
   const fallbackMetrics = [
-    { label: 'Sales Buddy Login', target: 8190, actual: 3084, achievement: 38, icon: Users, color: 'from-blue-500 to-blue-600' },
-    { label: 'Completed Lead', target: 1170, actual: 641, achievement: 55, icon: Target, color: 'from-green-500 to-green-600' },
-    { label: 'Credit Login in LOS', target: 430, actual: 228, achievement: 53, icon: CreditCard, color: 'from-purple-500 to-purple-600' },
+    { label: 'Sales Buddy Login', target: 8190, actual: 3084, achievement: 37.7, icon: Users, color: 'from-blue-500 to-blue-600' },
+    { label: 'Completed Lead', target: 1170, actual: 641, achievement: 54.8, icon: Target, color: 'from-green-500 to-green-600' },
+    { label: 'Credit Login in LOS', target: 430, actual: 228, achievement: 53.0, icon: CreditCard, color: 'from-purple-500 to-purple-600' },
     { label: 'Cases Sanction', target: 301, actual: 58, achievement: 19.3, icon: FileText, color: 'from-orange-500 to-orange-600' },
     { label: 'Cases Disbursed', target: 259, actual: 4, achievement: 1.5, icon: DollarSign, color: 'from-red-500 to-red-600' }
   ];
@@ -292,15 +301,28 @@ const Dashboard = () => {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                DataFeed
-              </h1>
+              <div className="flex items-center">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  DataFeed
+                </h1>
+                {dashboardData?.dataSource === 'real-time' && (
+                  <div className="ml-3 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center">
+                    <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
+                    LIVE
+                  </div>
+                )}
+              </div>
               <p className="text-slate-600 mt-2">Real-time insights into sales and lending performance</p>
               
               {/* Current Date Display */}
               <div className="flex items-center mt-2 text-gray-600">
                 <Calendar className="h-4 w-4 mr-2" />
                 <span className="text-sm">{formattedDate}</span>
+                {lastRefreshed && (
+                  <span className="text-xs ml-2 text-blue-600">
+                    (Last updated: {new Date(lastRefreshed).toLocaleTimeString()})
+                  </span>
+                )}
               </div>
             </div>
             
@@ -407,9 +429,17 @@ const Dashboard = () => {
                                    metric.achievement >= 30 ? 'text-amber-500' : 'text-red-600';
             
             return (
-              <div key={metric.label} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div key={metric.label} className="bg-white rounded-lg shadow-md overflow-hidden relative">
                 <div className={`p-4 ${headerBgColor}`}>
-                  <div className="text-white font-bold uppercase">{metric.label}</div>
+                  <div className="text-white font-bold uppercase flex justify-between items-center">
+                    <span>{metric.label}</span>
+                    {dashboardData?.dataSource === 'real-time' && (
+                      <span className="text-xs bg-white text-green-600 px-1 py-0.5 rounded-sm font-normal flex items-center">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
+                        LIVE
+                      </span>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-3 text-center border-b border-gray-200">
@@ -433,6 +463,12 @@ const Dashboard = () => {
                     style={{ width: `${Math.min(metric.achievement, 100)}%` }}
                   ></div>
                 </div>
+                
+                {lastRefreshed && (
+                  <div className="absolute bottom-0 right-0 text-[9px] text-gray-400 px-1">
+                    Updated: {new Date(lastRefreshed).toLocaleTimeString()}
+                  </div>
+                )}
               </div>
             );
           })}

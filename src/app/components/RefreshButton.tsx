@@ -91,7 +91,7 @@ export default function RefreshButton({
           disabled={isLoading}
           onMouseEnter={() => setTooltipVisible(true)}
           onMouseLeave={() => setTooltipVisible(false)}
-          className={`flex items-center px-4 py-2 text-white bg-[#7f7acf] hover:bg-[#6c67b5] rounded-lg disabled:opacity-50 transition-colors ${className}`}
+          className={`flex items-center px-4 py-2 text-white bg-[#7f7acf] hover:bg-[#6c67b5] rounded-lg disabled:opacity-50 transition-colors shadow-md hover:shadow-lg ${className}`}
         >
           <FiRefreshCw 
             className={`h-5 w-5 mr-2 ${isLoading || isSpinning ? 'animate-spin' : ''}`}
@@ -101,7 +101,7 @@ export default function RefreshButton({
           {isRealTimeData && (
             <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
               <span className="h-2 w-2 mr-1 rounded-full bg-green-500 animate-pulse"></span>
-              LIVE
+              REAL-TIME
             </span>
           )}
         </button>

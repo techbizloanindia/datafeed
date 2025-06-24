@@ -30,7 +30,9 @@ export async function GET(request: Request) {
     try {
       // Fetch data from Google Sheets with cache busting
       const timestamp = new Date().getTime();
-      data = await fetchSheetData(SPREADSHEET_ID, `Sheet1!A1:AF100?t=${timestamp}`);
+      const randomParam = Math.random().toString().substring(2);
+      console.log(`Fetching real-time data from Google Sheets at ${new Date().toISOString()}`);
+      data = await fetchSheetData(SPREADSHEET_ID, `Sheet1!A1:AF100?t=${timestamp}&r=${randomParam}`);
     } catch (error) {
       console.error('Error fetching from Google Sheets:', error);
       
@@ -230,7 +232,7 @@ export async function GET(request: Request) {
 function getMockData() {
   const now = new Date();
   
-  // Mock KPIs
+  // Mock KPIs - updated to match exact values from screenshot
   const kpis = {
     salesBuddyLogin: {
       target: 8190,
