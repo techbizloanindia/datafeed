@@ -388,3 +388,178 @@ This project is licensed under the MIT License - see the LICENSE file for detail
    - Improved responsive layout for better mobile experience
    - Enhanced data visualization with consistent chart styling
    - Added loading states and error handling for better user experience
+
+## 👨‍💻 Developer Guide
+
+This section provides guidance on how to correctly utilize and add features to the DataFeed project.
+
+### Code Organization
+
+When adding new features or modifying existing ones, follow these guidelines:
+
+1. **Component Structure**:
+   - Place shared components in `src/app/components/`
+   - Place role-specific components in their respective folders (e.g., `src/app/admin/components/`)
+   - Each component should have a single responsibility
+   - Use TypeScript interfaces for props
+
+2. **API Routes**:
+   - Place new API routes in `src/app/api/`
+   - Follow the existing pattern of separating route handlers into their own files
+   - Use TypeScript for request and response types
+   - Implement proper error handling
+
+3. **Pages**:
+   - Follow Next.js App Router conventions
+   - Place pages in their respective directories based on URL structure
+   - Use the `page.tsx` naming convention
+   - Implement proper loading states and error boundaries
+
+### Best Practices
+
+1. **TypeScript**:
+   - Use proper TypeScript types for all variables, function parameters, and return values
+   - Avoid using `any` type when possible
+   - Create interfaces for data structures
+   - Use generics for reusable components
+
+2. **State Management**:
+   - Use React Context for global state
+   - Use React hooks for component state
+   - Implement proper state initialization and updates
+   - Consider performance implications for state updates
+
+3. **Data Fetching**:
+   - Use API routes for data fetching
+   - Implement proper error handling
+   - Use loading states during data fetching
+   - Consider caching strategies for frequently accessed data
+
+4. **Styling**:
+   - Use Tailwind CSS for styling
+   - Follow the design system guidelines
+   - Use CSS variables for theme colors
+   - Ensure responsive design for all components
+
+### Adding New Features
+
+When adding a new feature to the project, follow these steps:
+
+1. **Plan**:
+   - Define the feature requirements
+   - Identify the components needed
+   - Determine the data requirements
+   - Consider the user experience
+
+2. **Implement**:
+   - Create necessary components
+   - Implement API routes if needed
+   - Add proper TypeScript types
+   - Follow the styling guidelines
+
+3. **Test**:
+   - Test the feature in development mode
+   - Verify it works across different screen sizes
+   - Check for any TypeScript or ESLint errors
+   - Ensure it integrates well with existing features
+
+4. **Document**:
+   - Add comments to complex code sections
+   - Update the README.md if necessary
+   - Document any API changes
+   - Add the feature to the "Recent Updates" section
+
+### Component Development
+
+When developing new components:
+
+1. **Component Architecture**:
+   - Use functional components with hooks
+   - Keep components small and focused
+   - Extract reusable logic into custom hooks
+   - Use proper prop types
+
+2. **Data Visualization Components**:
+   - Use Chart.js with React-chartjs-2 for charts
+   - Follow the existing chart configuration patterns
+   - Ensure proper data transformation for visualization
+   - Implement responsive chart sizing
+
+3. **Form Components**:
+   - Use controlled components for forms
+   - Implement proper validation
+   - Provide clear error messages
+   - Use consistent styling for form elements
+
+4. **Table Components**:
+   - Follow the existing table component patterns
+   - Implement sorting and filtering functionality
+   - Ensure proper pagination for large datasets
+   - Use consistent styling for table elements
+
+### Google Sheets Integration
+
+When working with Google Sheets integration:
+
+1. **API Configuration**:
+   - Update the `SPREADSHEET_ID` constant in the API route files
+   - Ensure your Google Sheets have the correct column headers
+   - Make sure the sheets are accessible with your API key
+
+2. **Data Transformation**:
+   - Transform the raw data from Google Sheets into the required format
+   - Handle edge cases such as missing data
+   - Implement proper error handling
+   - Consider caching strategies for frequently accessed data
+
+3. **Authentication**:
+   - Use the provided Google authentication flow
+   - Ensure proper handling of authentication tokens
+   - Implement token refresh logic
+   - Handle authentication errors gracefully
+
+### Deployment
+
+When deploying updates:
+
+1. **Build Process**:
+   - Run `npm run build` to ensure the build succeeds
+   - Fix any TypeScript or ESLint errors
+   - Optimize images and assets
+
+2. **Environment Variables**:
+   - Ensure all required environment variables are set
+   - Use different values for development and production
+   - Never commit sensitive information to the repository
+
+3. **Vercel Deployment**:
+   - Connect your GitHub repository to Vercel
+   - Configure environment variables in the Vercel dashboard
+   - Use preview deployments for testing changes
+   - Monitor deployment logs for any issues
+
+### Troubleshooting Common Issues
+
+1. **Build Errors**:
+   - Check for TypeScript errors
+   - Ensure all dependencies are installed
+   - Verify environment variables are properly set
+   - Check for ESLint errors
+
+2. **Data Fetching Issues**:
+   - Verify API routes are working correctly
+   - Check network requests in the browser console
+   - Ensure authentication tokens are valid
+   - Verify data transformation logic
+
+3. **Styling Issues**:
+   - Check for CSS conflicts
+   - Verify responsive design across different screen sizes
+   - Ensure proper use of Tailwind CSS classes
+   - Check for any custom CSS overrides
+
+4. **Performance Issues**:
+   - Optimize component rendering
+   - Implement proper memoization
+   - Reduce unnecessary re-renders
+   - Optimize data fetching and caching
