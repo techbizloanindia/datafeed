@@ -72,39 +72,65 @@ DataFeed is a Next.js-based web application for visualizing and analyzing financ
 
 ### Prerequisites
 
-- Node.js 18.x or later
+- Node.js 16.x or higher
 - npm or yarn
-- Google API credentials for Sheets integration
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/datafeed.git
+1. Clone the repository
+   ```
+   git clone https://github.com/techbizloanindia/datafeed.git
    cd datafeed
    ```
 
-2. Install dependencies:
-   ```bash
+2. Install dependencies
+   ```
    npm install
    # or
-   yarn install
+   yarn
    ```
 
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory with the following variables:
+3. Set up environment variables
+   Create a `.env.local` file with the following variables:
    ```
-   NEXT_PUBLIC_GOOGLE_API_KEY=your_google_api_key
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
    ```
 
-4. Run the development server:
-   ```bash
+4. Run the development server
+   ```
    npm run dev
    # or
    yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+5. Build for production
+   ```
+   npm run build
+   # or
+   yarn build
+   ```
+
+## Deployment
+
+The application can be deployed to Vercel or any other hosting platform that supports Next.js.
+
+## GitHub Repository Setup
+
+To push this project to GitHub, follow these steps:
+
+1. Create a new repository on GitHub
+2. Initialize Git in your project folder (if not already done)
+3. Add the remote repository
+4. Push your code
+
+Note: GitHub no longer supports password authentication for Git operations. Use a personal access token instead.
 
 ## Configuration
 
