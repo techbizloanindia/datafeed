@@ -436,25 +436,6 @@ export default function CreateUser() {
                 
                 {showRoleDropdown && (
                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                    <div className="p-2 border-b border-gray-200">
-                      <label className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedRoles.length === availableRoles.length}
-                          onChange={() => {
-                            if (selectedRoles.length === availableRoles.length) {
-                              setSelectedRoles([]);
-                              setRole("Branch Level");
-                            } else {
-                              setSelectedRoles([...availableRoles]);
-                              setRole(availableRoles[0]);
-                            }
-                          }}
-                          className="form-checkbox h-4 w-4 text-[#7f7acf] rounded border-gray-300 focus:ring-[#7f7acf]"
-                        />
-                        <span className="ml-2 text-sm font-medium text-gray-700">Select All</span>
-                      </label>
-                    </div>
                     {availableRoles.map((roleName) => (
                       <label key={roleName} className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
                         <input
@@ -525,23 +506,6 @@ export default function CreateUser() {
                   
                   {showClusterDropdown && (
                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                      <div className="p-2 border-b border-gray-200">
-                        <label className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={selectedClusters.length === clusters.length}
-                            onChange={() => {
-                              if (selectedClusters.length === clusters.length) {
-                                setSelectedClusters([]);
-                              } else {
-                                setSelectedClusters([...clusters]);
-                              }
-                            }}
-                            className="form-checkbox h-4 w-4 text-[#7f7acf] rounded border-gray-300 focus:ring-[#7f7acf]"
-                          />
-                          <span className="ml-2 text-sm font-medium text-gray-700">Select All</span>
-                        </label>
-                      </div>
                       {clusters.map((clusterName) => (
                         <label key={clusterName} className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
                           <input
@@ -591,23 +555,6 @@ export default function CreateUser() {
                   
                   {showBranchDropdown && (
                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                      <div className="p-2 border-b border-gray-200">
-                        <label className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={selectedBranches.length === branches.length}
-                            onChange={() => {
-                              if (selectedBranches.length === branches.length) {
-                                setSelectedBranches([]);
-                              } else {
-                                setSelectedBranches([...branches]);
-                              }
-                            }}
-                            className="form-checkbox h-4 w-4 text-[#7f7acf] rounded border-gray-300 focus:ring-[#7f7acf]"
-                          />
-                          <span className="ml-2 text-sm font-medium text-gray-700">Select All</span>
-                        </label>
-                      </div>
                       {branches.map((branchName) => (
                         <label key={branchName} className="inline-flex items-center w-full px-3 py-2 hover:bg-gray-100 cursor-pointer">
                           <input
