@@ -255,6 +255,9 @@ const Dashboard = () => {
       key: 'mtdVariancePercentage', 
       header: 'Variance %',
       format: (value: number) => {
+        if (value === null || value === undefined || !Number.isFinite(value)) {
+          return <span>0.00%</span>;
+        }
         const color = value >= 0 ? 'text-green-600' : 'text-red-600';
         return <span className={color}>{value.toFixed(2)}%</span>;
       }
@@ -271,6 +274,9 @@ const Dashboard = () => {
       key: 'mtdVariancePercentage', 
       header: 'Variance %',
       format: (value: number) => {
+        if (value === null || value === undefined || !Number.isFinite(value)) {
+          return <span>0.00%</span>;
+        }
         const color = value >= 0 ? 'text-green-600' : 'text-red-600';
         return <span className={color}>{value.toFixed(2)}%</span>;
       }

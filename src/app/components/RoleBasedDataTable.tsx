@@ -217,10 +217,20 @@ export default function RoleBasedDataTable({
 
   // Format cell value based on column configuration
   const formatCellValue = (row: any, column: any) => {
+    // Check if row exists and has the specified key
+    if (!row || !(column.key in row)) {
+      return '-';
+    }
+    
     const value = row[column.key];
     
     if (column.format) {
-      return column.format(value);
+      try {
+        return column.format(value);
+      } catch (error) {
+        console.error(`Error formatting value for ${column.key}:`, error);
+        return '-';
+      }
     }
     
     if (value === null || value === undefined) {
@@ -228,11 +238,23 @@ export default function RoleBasedDataTable({
     }
     
     if (typeof value === 'number') {
-      // Format numbers with commas and 2 decimal places if needed
-      return value % 1 === 0 ? value.toLocaleString() : value.toFixed(2);
+      try {
+        // Format numbers with commas and 2 decimal places if needed
+        return Number.isFinite(value) ? 
+          (value % 1 === 0 ? value.toLocaleString() : value.toFixed(2)) : 
+          '-';
+      } catch (error) {
+        console.error(`Error formatting number for ${column.key}:`, error);
+        return '-';
+      }
     }
     
-    return value.toString();
+    try {
+      return String(value);
+    } catch (error) {
+      console.error(`Error converting value to string for ${column.key}:`, error);
+      return '-';
+    }
   };
 
   return (

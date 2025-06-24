@@ -56,9 +56,9 @@ export default function GreenAmberLeadsTable({ data, isLoading = false }: GreenA
     });
 
   // Calculate totals for the filtered data
-  const totalGreenLeads = filteredAndSortedData.reduce((sum, item) => sum + item.greenLeads, 0);
-  const totalAmberLeads = filteredAndSortedData.reduce((sum, item) => sum + item.amberLeads, 0);
-  const totalLeads = filteredAndSortedData.reduce((sum, item) => sum + item.totalLeads, 0);
+  const totalGreenLeads = filteredAndSortedData.reduce((sum, item) => sum + (item.greenLeads || 0), 0);
+  const totalAmberLeads = filteredAndSortedData.reduce((sum, item) => sum + (item.amberLeads || 0), 0);
+  const totalLeads = filteredAndSortedData.reduce((sum, item) => sum + (item.totalLeads || 0), 0);
   const avgGreenLeadsPercentage = totalLeads > 0 ? (totalGreenLeads / totalLeads) * 100 : 0;
   const avgAmberLeadsPercentage = totalLeads > 0 ? (totalAmberLeads / totalLeads) * 100 : 0;
 
@@ -111,11 +111,11 @@ export default function GreenAmberLeadsTable({ data, isLoading = false }: GreenA
             </div>
             <div>
               <p className="text-gray-400 text-sm">Avg. Green %</p>
-              <p className="text-green-400 font-bold text-lg">{avgGreenLeadsPercentage.toFixed(1)}%</p>
+              <p className="text-green-400 font-bold text-lg">{Number.isFinite(avgGreenLeadsPercentage) ? avgGreenLeadsPercentage.toFixed(1) : '0.0'}%</p>
             </div>
             <div>
               <p className="text-gray-400 text-sm">Avg. Amber %</p>
-              <p className="text-amber-400 font-bold text-lg">{avgAmberLeadsPercentage.toFixed(1)}%</p>
+              <p className="text-amber-400 font-bold text-lg">{Number.isFinite(avgAmberLeadsPercentage) ? avgAmberLeadsPercentage.toFixed(1) : '0.0'}%</p>
             </div>
           </div>
         </div>
@@ -205,12 +205,12 @@ export default function GreenAmberLeadsTable({ data, isLoading = false }: GreenA
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                 <span className={`font-medium ${item.greenLeadsPercentage >= 40 ? 'text-green-400' : 'text-gray-300'}`}>
-                  {item.greenLeadsPercentage.toFixed(1)}%
+                  {Number.isFinite(item.greenLeadsPercentage) ? item.greenLeadsPercentage.toFixed(1) : '0.0'}%
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                 <span className={`font-medium ${item.amberLeadsPercentage >= 30 ? 'text-amber-400' : 'text-gray-300'}`}>
-                  {item.amberLeadsPercentage.toFixed(1)}%
+                  {Number.isFinite(item.amberLeadsPercentage) ? item.amberLeadsPercentage.toFixed(1) : '0.0'}%
                 </span>
               </td>
             </tr>
@@ -225,10 +225,10 @@ export default function GreenAmberLeadsTable({ data, isLoading = false }: GreenA
             <td className="px-6 py-3 text-sm font-medium text-right text-amber-400">{totalAmberLeads}</td>
             <td className="px-6 py-3 text-sm font-medium text-right text-white">{totalLeads}</td>
             <td className="px-6 py-3 text-sm font-medium text-right text-green-400">
-              {avgGreenLeadsPercentage.toFixed(1)}%
+              {Number.isFinite(avgGreenLeadsPercentage) ? avgGreenLeadsPercentage.toFixed(1) : '0.0'}%
             </td>
             <td className="px-6 py-3 text-sm font-medium text-right text-amber-400">
-              {avgAmberLeadsPercentage.toFixed(1)}%
+              {Number.isFinite(avgAmberLeadsPercentage) ? avgAmberLeadsPercentage.toFixed(1) : '0.0'}%
             </td>
           </tr>
         </tfoot>
